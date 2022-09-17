@@ -1,6 +1,7 @@
 {
-  "name": "unicorn-fun",
-	"version": "0.0.1",
+  "name": "kinto-un",
+	"version": "0.0.2",
+	"main": "./dist/index.js",
 	"description": "Node js server side rendering toolkit",
 	"license": "MIT",
 	"repository": "WLowe10/kinto-un",
@@ -10,13 +11,16 @@
 		"node": ">=14.16"
 	},
 	"scripts": {
+		"prepublish": "npm run build",
+		"build": "tsc"
 	},
-	"files": [
-		"index.js"
-	],
+	
 	"keywords": [
-		"unicorn",
-		"fun"
+		"server",
+		"rendering",
+		"server side rendering",
+		"ssr",
+		"react"
 	],
 
   "devDependencies": {

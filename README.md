@@ -1,0 +1,1 @@
+kinto-un is a server side rendering toolkit as an alternative to other Reactjs server side rendering tools

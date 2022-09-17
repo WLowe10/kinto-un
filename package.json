@@ -1,6 +1,6 @@
 {
   "name": "kinto-un",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "main": "./lib/index.js",
   "description": "Node js server side rendering toolkit",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "react"
   ],
   "scripts": {
-    "prepublish": "npm run build && npm version patch",
+    "prepublishOnly": "npm run build && npm version patch",
     "build": "rimraf ./lib/* && tsc"
   },
   "devDependencies": {

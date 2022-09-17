@@ -1,6 +1,6 @@
 declare class Kinto {
     views: any[];
     constructor();
-    render: (name: string, props?: {} | undefined) => Promise<void>;
+    render: (name: string, props?: {}) => Promise<void>;
 }
 export default Kinto;

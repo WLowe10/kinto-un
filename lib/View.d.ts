@@ -15,8 +15,8 @@ declare class View {
         component: React.ComponentType;
     }, dependencies: string[]);
     init: () => Promise<void>;
-    render: (props?: {} | undefined) => Promise<string | undefined>;
-    convertToHtml: (props?: {} | undefined) => Promise<string>;
+    render: (props?: {}) => Promise<string | undefined>;
+    convertToHtml: (props?: {}) => Promise<string>;
     snapshot: ({ html, props }: {
         html: string;
         props?: {} | undefined;

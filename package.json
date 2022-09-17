@@ -4,17 +4,15 @@
 	"main": "./lib/index.js",
 	"description": "Node js server side rendering toolkit",
 	"license": "MIT",
-	"repository": "WLowe10/kinto-un",
+	"repository": "https://github.com/WLowe10/kinto-un",
 	"type": "module",
 	"exports": "./index.js",
 	"engines": {
 		"node": ">=14.16"
 	},
-	"scripts": {
-		"prepublish": "npm run build && npm version patch",
-		"build": "rm ./lib/* && tsc"
-	},
-	
+	"files": [
+		"lib"
+	],
 	"keywords": [
 		"server",
 		"rendering",
@@ -22,7 +20,11 @@
 		"ssr",
 		"react"
 	],
-
+	"scripts": {
+		"prepublish": "npm run build && npm version patch",
+		"build": "rimraf ./lib/* && tsc"
+	},
+	
   "devDependencies": {
 	"react": "^18.2.0",
     "@types/react-dom": "^18.0.6",

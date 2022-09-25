@@ -1,3 +1,5 @@
+// import 'ignore-styles'
+
 import Kinto from "./Kinto";
 export default Kinto;
 export {

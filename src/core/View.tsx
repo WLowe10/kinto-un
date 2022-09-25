@@ -1,47 +1,55 @@
 import * as ReactDOMServer from 'react-dom/server';
 import React from "react";
+import KintoRoot from './KintoRoot';
+import fs from "fs";
+import path from "path";
+
+//REWORK FILE TO WORK AS .ts
+
 
 class View {
-    name: string;
+    id: string;
+    buildDir: string;
     stable: boolean;
-    component: React.ComponentType;
+    Component: any;
     baseHTML: string;
     lastRender: {time?: number, html?: string, props?: {}}
 
-    constructor({component, stable, name}: {name: string, stable: boolean, component: React.ComponentType}, dependencies: string[]) {
-        this.name = name;
+    constructor({component, stable, name, buildDir}: {name: string, buildDir: string, stable: boolean, component: any}, dependencies: string[]) {
+        this.id = name;
+        this.buildDir = buildDir;
         this.stable = stable;
         this.baseHTML = "";
         this.lastRender = {};
-        this.component = component;
-
+        this.Component = component;
         this.init();
     }
 
     init = async () => {
-        this.baseHTML = await this.convertToHtml();
+        this.baseHTML = await this.convertToHtml()
     };
 
     render = async (props?: {}) => {
+        await this.baseHTML;
         let lastProps = this.lastRender.props;
         let lastHtml = this.lastRender.html;
+        let baseHtml = this.baseHTML;
 
         if (this.stable) {
-            return this.lastRender.html;
+            return lastHtml;
         };
         
         if (props && JSON.stringify(props) !== JSON.stringify(lastProps)) {
             return this.convertToHtml(props);
-        };
-
-        if (!props) return this.baseHTML;
-
-        return lastHtml;
+        } else {
+            return baseHtml;
+        }
     };
 
     convertToHtml = async (props?: {}) => {
-        console.log("rendering")
-        let html = await ReactDOMServer.renderToStaticMarkup(<this.component {...props}/>);
+        let doesViewHaveCss = fs.existsSync(path.join(this.buildDir, `./static/css/${this.id}.css`));
+        
+        let html = await ReactDOMServer.renderToString(<KintoRoot id={this.id} css={doesViewHaveCss} js={false}><this.Component {...props}/></KintoRoot>);        
         this.snapshot({html, props});
         return html;
     };

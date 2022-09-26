@@ -9,6 +9,7 @@ type Props = {
 
 const KintoRoot = ({children, id, css, js}: Props) => {
     const cssURL = `./static/css/${id}.css`;
+    const jsURL = `./static/js/${id}.js`;
 
     return (
         <html lang="en">
@@ -18,6 +19,7 @@ const KintoRoot = ({children, id, css, js}: Props) => {
                 {
                     css ? <link rel="stylesheet" href={cssURL}/> : null
                 } 
+            <script src={jsURL} defer />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>document</title>
         </head>

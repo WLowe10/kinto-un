@@ -1,15 +1,8 @@
 import * as ReactDOMServer from 'react-dom/server';
 import React from "react";
-import KintoRoot from './KintoRoot';
-import fs from "fs";
-import path from "path";
-
-//REWORK FILE TO WORK AS .ts
-
 
 class View {
     id: string;
-    buildDir: string;
     stable: boolean;
     Component: any;
     baseHTML: string;
@@ -17,7 +10,6 @@ class View {
 
     constructor({component, stable, name, buildDir}: {name: string, buildDir: string, stable: boolean, component: any}, dependencies: string[]) {
         this.id = name;
-        this.buildDir = buildDir;
         this.stable = stable;
         this.baseHTML = "";
         this.lastRender = {};
@@ -47,9 +39,8 @@ class View {
     };
 
     convertToHtml = async (props?: {}) => {
-        let doesViewHaveCss = fs.existsSync(path.join(this.buildDir, `./static/css/${this.id}.css`));
-        
-        let html = await ReactDOMServer.renderToString(<KintoRoot id={this.id} css={doesViewHaveCss} js={false}><this.Component {...props}/></KintoRoot>);        
+        let view = React.createElement(this.Component, props);
+        let html = await ReactDOMServer.renderToString(view);    
         this.snapshot({html, props});
         return html;
     };

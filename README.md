@@ -44,7 +44,7 @@ npm run build
 import Kinto from "kinto-un";
 
 //set the build directory
-Kinto.set("./build");
+Kinto.setDir("./build");
 
 const main = async () => {
   let html = await Kinto.render("Home", {
@@ -69,7 +69,7 @@ import express from "express";
 const app = express();
 
 //Set the build directory
-Kinto.set("./build");
+Kinto.setDir("./build");
 
 //Serve the bundled css and js. Kinto-un automatically will import css into the render if the view has css.
 app.use("/static", express.static("./build/static"))

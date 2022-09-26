@@ -1,6 +1,6 @@
 {
   "name": "kinto-un",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "./lib/index.js",
   "description": "Node js server side rendering toolkit",
   "license": "MIT",

@@ -1,9 +1,12 @@
+#! /usr/bin/env node
 import fs from "fs";
 import glob from "glob-promise";
 import path from "path";
 import esbuild from "esbuild";
 import { v4 as uuidv4 } from 'uuid';
 //detect if no views are present in client directory
+
+const [,, ...args] = process.argv;
 
 class KintoBuilder {
   startTime: number;
@@ -105,4 +108,5 @@ class KintoBuilder {
   }
 }
 
-const builder = new KintoBuilder().build()
+const builder = new KintoBuilder();
+      builder.build();

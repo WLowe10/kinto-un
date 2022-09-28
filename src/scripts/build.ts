@@ -22,7 +22,7 @@ class KintoBuilder {
     if (!args.length) return console.log("You must provide a path to the client directory to build")
     let files = await glob("**/*.view.{ts,tsx,js,jsx}", { cwd: args[0] });
 
-    if (!files) return console.log("no views were found in the directory provided");
+    if (!files.length) return console.log("no views were found in the directory provided");
     await console.log(`Building ${files.length} views`)
     await this.initDirs();
 

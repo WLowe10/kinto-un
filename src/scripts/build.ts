@@ -6,7 +6,6 @@ import esbuild from "esbuild";
 import { v4 as uuidv4 } from 'uuid';
 //detect if no views are present in client directory
 
-const [,, ...args] = process.argv;
 
 class KintoBuilder {
   startTime: number;
@@ -18,9 +17,14 @@ class KintoBuilder {
   }
 
   build = async () => {
-    await this.initDirs();
+    const [,, ...args] = process.argv;
 
-    let files = await glob("**/*.view.{ts,tsx,js,jsx}", { ignore: ["*/build/**"] });
+    if (!args.length) return console.log("You must provide a path to the client directory to build")
+    let files = await glob("**/*.view.{ts,tsx,js,jsx}", { cwd: args[0] });
+
+    if (!files) return console.log("no views were found in the directory provided");
+    await console.log(`Building ${files.length} views`)
+    await this.initDirs();
 
     files.forEach((filePath) => {
       this.bundle(filePath)
@@ -96,7 +100,7 @@ class KintoBuilder {
   }
 
   initDirs = async () => {
-    await fs.rmSync(path.join(this.rootDir, "./build"), { recursive: true });
+    await fs.existsSync(path.join(this.rootDir, "./build")) && fs.rmSync(path.join(this.rootDir, "./build"), { recursive: true });
     !fs.existsSync(path.join(this.rootDir, "./build")) && fs.mkdirSync(path.join(this.rootDir, "./build"));
     !fs.existsSync(path.join(this.rootDir, "./build/views")) && fs.mkdirSync(path.join(this.rootDir, "./build/views"));
     !fs.existsSync(path.join(this.rootDir, "./build/static")) && fs.mkdirSync(path.join(this.rootDir, "./build/static"));

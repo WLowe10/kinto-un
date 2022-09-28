@@ -21,11 +21,10 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build && npm version patch",
-    "build": "rimraf ./lib/* && tsc",
-    "package": "buildapp"
+    "build": "rimraf ./lib/* && tsc"
   },
   "bin": {
-    "buildapp": "./lib/scripts/build.js"
+    "kintobuild": "./lib/scripts/build.js"
   },
   "devDependencies": {
     "@types/react-dom": "^18.0.6",

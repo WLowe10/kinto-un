@@ -15,7 +15,7 @@ The simplest React JS server side rendering framework. Uses esbuild for insanely
 
 
 ```javascript
-/* Home.view.(js/ts)x */
+/* client/Home.view.(js/ts)x */
 
 const Home = ({message}) => {
   return (
@@ -28,6 +28,19 @@ const Home = ({message}) => {
 export default Home;
 ```
 
+## Add the build script to your package.json
+
+```javascript
+"scripts": {
+    "build": "kintobuild --src ./client":
+}
+```
+
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `--src` | `string` | **Required**. Provide the source directory of your Kinto views. |
+| `--out` | `string` | **Optional**. Provide the desired output of your build. Defaults to the current working directory. |
 
 ## Now build the app
 

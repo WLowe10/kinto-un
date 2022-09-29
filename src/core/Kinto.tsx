@@ -75,8 +75,9 @@ class Kinto {
             <head>
                 <meta charSet="UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-                ${ doesViewHaveCss ? `<link rel="stylesheet" href="./static/css/${id}.css" />` : ""}
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                ${ doesViewHaveCss ? `<link rel="stylesheet" href="./static/css/${id}.css" />` : "\n"}
+                <script src="./static/js/${id}.js" defer></script>
                 <title>document</title>
             </head>
             <body>

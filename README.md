@@ -51,8 +51,6 @@ const main = async () => {
     //props
       message: `Hello World @${Date.now()}`
   })
-
-  res.send(html)
 };
 
 main();

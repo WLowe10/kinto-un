@@ -3,17 +3,21 @@ import React from "react";
 
 class View {
     id: string;
+    name: string;
     stable: boolean;
     Component: any;
+   // getServerProps?: (...args: any[]) => any;
     baseHTML: string;
     lastRender: {time?: number, html?: string, props?: {}}
 
-    constructor({component, stable, name, buildDir}: {name: string, buildDir: string, stable: boolean, component: any}, dependencies: string[]) {
-        this.id = name;
+    constructor({id, name, component, /*getServerProps,*/ stable}: {id: string, name: string, stable: boolean, component: any, /*getServerProps: (...args: any[]) => any */}, dependencies: string[]) {
+        this.id = id;
+        this.name = name;
         this.stable = stable;
         this.baseHTML = "";
         this.lastRender = {};
         this.Component = component;
+       // this.getServerProps = getServerProps
         this.init();
     }
 
@@ -26,6 +30,21 @@ class View {
         let lastProps = this.lastRender.props;
         let lastHtml = this.lastRender.html;
         let baseHtml = this.baseHTML;
+        let renderProps = props;
+
+        // if (this.getServerProps) {
+        //     let result = await this.getServerProps();
+        //     let serverProps = result.props;
+        //     if (!serverProps || typeof serverProps !== "object") throw `getStaticProps in ${this.name} does not return valid props`;
+        //     renderProps = {...renderProps, ...serverProps};
+        // }
+
+        let html = await this.convertToHtml(renderProps);
+
+        return {
+            html, 
+            props: renderProps
+        }
 
         if (this.stable) {
             return lastHtml;

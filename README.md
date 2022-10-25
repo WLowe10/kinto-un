@@ -10,6 +10,7 @@ The simplest React JS server side rendering framework. Uses esbuild for insanely
   npm install kinto-un
 ```
     
+# Demo
 ## First create a component
 #### A view must be named with .view to be recognized by the kinto compiler
 

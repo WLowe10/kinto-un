@@ -26,9 +26,12 @@ class Kinto {
         let id = await this.nameToUUID(name);
         if (!id) throw `View of name, "${name}" does not exist. Please provide the correct name or build your app`;
         let view = await this.views.find(view => view.id === id);
-        let html = await view.render(props);
-        let document = await this.formatDocument(html, id)
 
+        //add possibilty to disable getServerProps via bool parameter
+        let {html, props: renderedProps} = await view.render(props);
+        let document = await this.formatDocument(html, id, renderedProps);
+
+        console.log(document)
         return document;
     };
 
@@ -43,16 +46,22 @@ class Kinto {
         if (!views) return;
 
         for (let i = 0; i < views.length; i++) {
-            let view = views[i];
-            let component = await require(path.join(this.buildDir, view));
-                component = component.default || component[Object.keys(component)[0]];
-                let basename = path.basename(view);
-                let nameMatch = basename.match(/^([^\.])+/);
-                let name;
-                nameMatch ? name = nameMatch[0] : name = null;
+            let file = path.join(this.buildDir, views[i])
+            let view = await require(file);
+            let component = view.default;
+           // let getServerProps = view.getServerProps;
+                if (!component) throw `${file} has no default export`
+                let element = React.createElement(component);
+                if (!React.isValidElement(element)) throw `The default export in (${file}) is not a React Component`;
+                let viewName = component.name;
+                let basename = path.basename(file);
+                let idMatch = basename.match(/^([^\.])+/);
+                let id;
+                idMatch ? id = idMatch[0] : id = null;
 
-                if (!name || !component) return;
-                    this.views.push(new View({component, name, stable: false, buildDir: this.buildDir}, []));
+
+                if (!id || !component) return;
+                    this.views.push(new View({id, name: viewName, component, stable: false}, []));
         }      
     }
 
@@ -66,7 +75,7 @@ class Kinto {
         return id;
     };
 
-    formatDocument = async (html: string, id: string) => {
+    formatDocument = async (html: string, id: string, props?: {}) => {
         if (!this.buildDir) return;
         let doesViewHaveCss = await fs.existsSync(path.join(this.buildDir, `./static/css/${id}.css`));
 
@@ -78,16 +87,14 @@ class Kinto {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 ${ doesViewHaveCss ? `<link rel="stylesheet" href="./static/css/${id}.css" />` : "\n"}
                 <script src="./static/js/${id}.js" defer></script>
+                <script>const renderData = { initialProps: ${JSON.stringify(props) || null} }</script>
                 <title>document</title>
             </head>
             <body>
-                <div id="root">
-                    ${html}
-                </div>
+                <div id="root">${html}</div>
             </body>
             </html>
         `;
-
         return document;
 
     }

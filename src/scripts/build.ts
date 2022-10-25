@@ -4,8 +4,22 @@ import glob from "glob-promise";
 import path from "path";
 import esbuild from "esbuild";
 import { v4 as uuidv4 } from 'uuid';
-import yargs from "yargs";
+import yargs, { parse } from "yargs";
+import * as acorn from "acorn";
+import { transformSync } from "@babel/core";
 //detect if no views are present in client directory
+
+const args: any = yargs
+.option('src', {
+    description: "Directory of kinto views",
+    demand: true,
+    type: "string"
+})
+.option('out', {
+    description: "Desired output directory for build. Default is CWD",
+    demand: false,
+    type: "string"
+}).parse();
 
 class KintoBuilder {
   startTime: number;
@@ -15,27 +29,13 @@ class KintoBuilder {
   constructor() {
     this.startTime = Date.now();
     this.rootDir = process.cwd();
-    this.outDir = this.rootDir;
+    this.outDir = ( args.out ? path.join(this.rootDir, args.out) :  this.rootDir);
   }
 
   build = async () => {
-    let args: any = yargs
-    .option('src', {
-        description: "Directory of kinto views",
-        demand: true,
-        type: "string"
-    })
-    .option('out', {
-        description: "Desired output directory for build. Default is CWD",
-        demand: false,
-        type: "string"
-    }).parse();
-  
-    this.outDir = ( args.out ? path.join(this.rootDir, args.out) :  this.rootDir);
-    
      let files = await glob(`${args.src}/**/*.view.{ts,tsx,js,jsx}`);
      if (!files.length) return console.log("No views were found in the directory provided");
-
+    console.log(files)
      await console.log(`Building (${files.length}) view${files.length > 1 ? "s" : ""}`)
      await this.initDirs();
 
@@ -54,24 +54,38 @@ class KintoBuilder {
     nameMatch ? name = nameMatch[0] : name = null;
     if (!name) return
     
-    let result = await esbuild.build({
-      entryPoints: [filePath],
-      legalComments: "none",
-      jsx: "automatic",
-      outdir: 'out',
-      minify: true,
-      bundle: true,
-      write: false
-    })
+    // let result = await esbuild.build({
+    //   entryPoints: [filePath],
+    //   legalComments: "none",
+    //   jsx: "automatic",
+    //   outdir: 'out',
+    //   minify: false, 
+    //   bundle: true,
+    //   write: false,
+    //   define: {
+    //     "process.env.VIEW": "false"
+    //   },
+    //   loader: {
+    //     ".png": "file",
+    //   },
+    // })
   
-    if (!result.outputFiles) return;
-        let jsContent = result.outputFiles[0].text;
-        let cssContent = result.outputFiles[1] ? result.outputFiles[1].text : null;
-            if (jsContent) this.writeJS(jsContent, id);
-            if (cssContent) this.writeCSS(cssContent, id);
+    // if (!result.outputFiles) return;
+    //     let jsContent = result.outputFiles[0].text;
+    //     let cssContent = result.outputFiles[1] ? result.outputFiles[1].text : null;
+    //         if (jsContent) this.writeJS(jsContent, id);
+    //         if (cssContent) this.writeCSS(cssContent, id);
 
-            await this.buildView(filePath, id)
-            await this.map(id, name);
+    //         await this.buildView(filePath, id)
+    //         await this.map(id, name);
+    let content = await fs.readFileSync(filePath, "utf8")
+
+   // let ast = await acorn.parse(content, {ecmaVersion: 2020, sourceType: "module"})
+    //console.log(ast)
+
+    // const { code, map, ast }: any = await transformFromAstSync(ast, content)
+
+
   }
 
   buildView = async (filePath: string, id: string) => {
@@ -82,8 +96,14 @@ class KintoBuilder {
       outdir: "out",
       write: false,
       minify: false,
+      loader: {
+        ".png": "dataurl"
+      },
       bundle: true,
-   //   external: ["react"]
+      define: {
+        "process.env.VIEW": "true"
+      },
+      external: ["react", "react-dom"]
     })
 
     let jsContent = result.outputFiles[0].text;

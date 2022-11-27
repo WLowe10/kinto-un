@@ -32,19 +32,7 @@ class View {
         let baseHtml = this.baseHTML;
         let renderProps = props;
 
-        // if (this.getServerProps) {
-        //     let result = await this.getServerProps();
-        //     let serverProps = result.props;
-        //     if (!serverProps || typeof serverProps !== "object") throw `getStaticProps in ${this.name} does not return valid props`;
-        //     renderProps = {...renderProps, ...serverProps};
-        // }
-
         let html = await this.convertToHtml(renderProps);
-
-        return {
-            html, 
-            props: renderProps
-        }
 
         if (this.stable) {
             return lastHtml;
